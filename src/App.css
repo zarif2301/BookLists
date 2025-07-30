@@ -1,38 +1,187 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+/* Container setup */
+.app-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 30px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f9f9f9;
+  color: #333;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+}
+
+/* Header styling */
+.app-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.app-header h1 {
+  font-size: 2.4rem;
+  margin-bottom: 8px;
+}
+
+.app-header p {
+  font-size: 1.2rem;
+  color: #555;
+}
+
+/* Book list grid */
+.book-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 28px;
+  flex-grow: 1; /* so footer stays at bottom if content is small */
+}
+
+/* Individual book card */
+.book-card {
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+  border-radius: 10px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.book-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* Book image */
+.book-card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+/* Book title */
+.book-card h3 {
+  font-size: 1.25rem;
+  margin-bottom: 10px;
+  text-align: center;
+  color: #222;
+}
+
+/* Book details */
+.book-card p {
+  font-size: 0.95rem;
+  margin: 4px 0;
+  text-align: center;
+  color: #444;
+}
+
+/* Footer and pagination */
+.app-footer {
+  margin-top: 50px;
+  text-align: center;
+  color: #777;
+}
+
+/* Pagination buttons */
+.app-footer button {
+  background-color: #007bff;
+  border: none;
   color: white;
+  padding: 12px 20px;
+  margin: 0 8px;
+  font-size: 1.1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  min-width: 110px;
 }
 
-.App-link {
-  color: #61dafb;
+.app-footer button:hover:not(:disabled) {
+  background-color: #0056b3;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.app-footer button:disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+}
+
+/* Pagination info */
+.app-footer p {
+  margin-top: 18px;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Responsive tweaks for smaller screens */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 20px 15px;
   }
-  to {
-    transform: rotate(360deg);
+  .app-header h1 {
+    font-size: 1.8rem;
   }
+  .app-header p {
+    font-size: 1rem;
+  }
+  .app-footer button {
+    padding: 10px 14px;
+    font-size: 1rem;
+    min-width: 90px;
+  }
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.pagination button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 10px 14px;
+  font-size: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  min-width: 40px;
+  transition: background-color 0.3s ease;
+}
+
+.pagination button:hover:not(.active) {
+  background-color: #0056b3;
+}
+
+.pagination button.active,
+.pagination button[aria-current='page'] {
+  background-color: #004080;
+  font-weight: 700;
+  cursor: default;
+}
+
+.pagination button:focus {
+  outline: 2px solid #004080;
+  outline-offset: 2px;
+}
+/* Search Bar */
+.search-container {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.search-container input {
+  padding: 10px 15px;
+  width: 60%;
+  max-width: 400px;
+  font-size: 1rem;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s ease;
+}
+
+.search-container input:focus {
+  border-color: #0a79f0;
+  outline: none;
 }
