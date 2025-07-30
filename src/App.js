@@ -183,7 +183,7 @@ function App() {
         <p style={{ marginTop: '10px' }}>
           Page {currentPage} of {totalPages}
         </p>
-        <p>&copy; 2025 Book List | Made with ❤️</p>
+        <p>&copy; 2025 Book List</p>
       </footer>
     </div>
   );
