@@ -6,13 +6,13 @@ function App() {
   const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [searchInput, setSearchInput] = useState('');
+  const [searchClicked, setSearchClicked] = useState(false);
 
-  // Filters
-  const [selectedCountry, setSelectedCountry] = useState('');
-  const [selectedLanguage, setSelectedLanguage] = useState('');
-  const [selectedPages, setSelectedPages] = useState('');
-  const [selectedYear, setSelectedYear] = useState('');
+  // Filter states
+  const [countryFilter, setCountryFilter] = useState('');
+  const [languageFilter, setLanguageFilter] = useState('');
+  const [pagesFilter, setPagesFilter] = useState('');
+  const [yearFilter, setYearFilter] = useState('');
 
   const booksPerPage = 20;
 
@@ -22,40 +22,65 @@ function App() {
       .then((data) => setBooks(data));
   }, []);
 
-  // Handle actual search button click
-  const handleSearch = () => {
-    setSearchTerm(searchInput);
+  const handleSearchInputChange = (e) => setSearchTerm(e.target.value);
+
+  const handleSearchClick = () => {
+    setSearchClicked(true);
     setCurrentPage(1);
   };
 
-  // Clear all filters
   const handleClearFilters = () => {
+    setCountryFilter('');
+    setLanguageFilter('');
+    setPagesFilter('');
+    setYearFilter('');
     setSearchTerm('');
-    setSearchInput('');
-    setSelectedCountry('');
-    setSelectedLanguage('');
-    setSelectedPages('');
-    setSelectedYear('');
+    setSearchClicked(false);
     setCurrentPage(1);
   };
 
-  // Apply filters
+  const filterByRange = (value, range) => {
+    const [min, max] = range;
+    return value >= min && value <= max;
+  };
+
+  const getCenturyRange = (centuryLabel) => {
+    switch (centuryLabel) {
+      case '16th': return [1501, 1600];
+      case '17th': return [1601, 1700];
+      case '18th': return [1701, 1800];
+      case '19th': return [1801, 1900];
+      default: return null;
+    }
+  };
+
+  const getPageRange = (label) => {
+    switch (label) {
+      case '1-100': return [1, 100];
+      case '101-200': return [101, 200];
+      case '201-300': return [201, 300];
+      default: return null;
+    }
+  };
+
   const filteredBooks = books.filter((book) => {
-    const matchesSearch =
+    const matchesSearch = !searchClicked || (
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCountry = selectedCountry ? book.country === selectedCountry : true;
-    const matchesLanguage = selectedLanguage ? book.language === selectedLanguage : true;
-    const matchesPages =
-      selectedPages === 'lt200' ? book.pages < 200 :
-      selectedPages === '200to500' ? book.pages >= 200 && book.pages <= 500 :
-      selectedPages === 'gt500' ? book.pages > 500 : true;
-    const matchesYear = selectedYear ? book.year.toString() === selectedYear : true;
+      book.author.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const matchesCountry = countryFilter === '' || book.country === countryFilter;
+    const matchesLanguage = languageFilter === '' || book.language === languageFilter;
+
+    const pagesRange = getPageRange(pagesFilter);
+    const matchesPages = !pagesRange || filterByRange(book.pages, pagesRange);
+
+    const yearRange = getCenturyRange(yearFilter);
+    const matchesYear = !yearRange || filterByRange(book.year, yearRange);
 
     return matchesSearch && matchesCountry && matchesLanguage && matchesPages && matchesYear;
   });
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
@@ -66,61 +91,62 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const uniqueCountries = [...new Set(books.map((book) => book.country))].sort();
+  const uniqueLanguages = [...new Set(books.map((book) => book.language))].sort();
 
   return (
     <div className="app-container">
       <Header />
 
-      {/* Search & Filters */}
+      {/* Search bar */}
       <div className="search-container">
         <input
           type="text"
           placeholder="Search by title or author..."
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
+          value={searchTerm}
+          onChange={handleSearchInputChange}
         />
-        <button className="search-button" onClick={handleSearch}>Search</button>
+        <button onClick={handleSearchClick} className="search-button">Search</button>
       </div>
 
+      {/* Filters */}
       <div className="filter-container">
-        <select value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
+        <select value={countryFilter} onChange={(e) => setCountryFilter(e.target.value)}>
           <option value="">All Countries</option>
-          {[...new Set(books.map(book => book.country))].sort().map((country, idx) => (
-            <option key={idx} value={country}>{country}</option>
+          {uniqueCountries.map((country, index) => (
+            <option key={index} value={country}>{country}</option>
           ))}
         </select>
 
-        <select value={selectedLanguage} onChange={(e) => setSelectedLanguage(e.target.value)}>
+        <select value={languageFilter} onChange={(e) => setLanguageFilter(e.target.value)}>
           <option value="">All Languages</option>
-          {[...new Set(books.map(book => book.language))].sort().map((lang, idx) => (
-            <option key={idx} value={lang}>{lang}</option>
+          {uniqueLanguages.map((lang, index) => (
+            <option key={index} value={lang}>{lang}</option>
           ))}
         </select>
 
-        <select value={selectedPages} onChange={(e) => setSelectedPages(e.target.value)}>
-          <option value="">All Page Counts</option>
-          <option value="lt200">Less than 200</option>
-          <option value="200to500">200–500</option>
-          <option value="gt500">More than 500</option>
+        <select value={pagesFilter} onChange={(e) => setPagesFilter(e.target.value)}>
+          <option value="">All Page Ranges</option>
+          <option value="1-100">1-100</option>
+          <option value="101-200">101-200</option>
+          <option value="201-300">201-300</option>
         </select>
 
-        <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
-          <option value="">All Years</option>
-          {[...new Set(books.map(book => book.year))].sort((a, b) => a - b).map((year, idx) => (
-            <option key={idx} value={year}>{year}</option>
-          ))}
+        <select value={yearFilter} onChange={(e) => setYearFilter(e.target.value)}>
+          <option value="">All Centuries</option>
+          <option value="16th">16th Century</option>
+          <option value="17th">17th Century</option>
+          <option value="18th">18th Century</option>
+          <option value="19th">19th Century</option>
         </select>
 
-        <button className="clear-button" onClick={handleClearFilters}>Clear Filters</button>
+        <button onClick={handleClearFilters} className="clear-button">Clear Filters</button>
       </div>
 
       {/* Book list */}
       <main className="book-list">
         {currentBooks.length === 0 ? (
-          <p style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
-            No books found.
-          </p>
+          <p style={{ gridColumn: '1 / -1', textAlign: 'center' }}>No books found.</p>
         ) : (
           currentBooks.map((book, index) => (
             <div key={index} className="book-card">
@@ -131,7 +157,6 @@ function App() {
               <h3>{book.title}</h3>
               <p><strong>Author:</strong> {book.author}</p>
               <p><strong>Country:</strong> {book.country}</p>
-              <p><strong>Language:</strong> {book.language}</p>
               <p><strong>Year:</strong> {book.year}</p>
               <p><strong>Pages:</strong> {book.pages}</p>
             </div>
@@ -143,12 +168,11 @@ function App() {
       <footer className="app-footer">
         {totalPages > 1 && (
           <div className="pagination">
-            {pageNumbers.map((num) => (
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
               <button
                 key={num}
                 onClick={() => handlePageClick(num)}
                 className={num === currentPage ? 'active' : ''}
-                aria-current={num === currentPage ? 'page' : undefined}
               >
                 {num}
               </button>
