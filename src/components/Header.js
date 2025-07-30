@@ -7,5 +7,6 @@ export default function Header() {
       <h1>Welcome to Open Library</h1>
       <p>Explore 100 of the best books from around the world</p>
     </header>
+    
   );
 }
