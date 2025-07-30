@@ -185,3 +185,16 @@
   border-color: #0a79f0;
   outline: none;
 }
+
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.filter-container select {
+  padding: 8px;
+  font-size: 14px;
+}

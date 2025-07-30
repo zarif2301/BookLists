@@ -6,6 +6,12 @@ function App() {
   const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({
+    country: '',
+    language: '',
+    pages: '',
+    year: ''
+  });
   const booksPerPage = 20;
 
   useEffect(() => {
@@ -14,13 +20,37 @@ function App() {
       .then((data) => setBooks(data));
   }, []);
 
-  // Filter books by title or author
-  const filteredBooks = books.filter((book) =>
-    book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    book.author.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Get filter options from books
+  const uniqueOptions = (key) => [...new Set(books.map((book) => book[key]))].sort();
 
-  // Pagination logic
+  // Handle search
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    setCurrentPage(1);
+  };
+
+  // Handle filter change
+  const handleFilterChange = (e) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+    setCurrentPage(1);
+  };
+
+  // Apply filters and search
+  const filteredBooks = books.filter((book) => {
+    const matchesSearch =
+      book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesFilters =
+      (filters.country === '' || book.country === filters.country) &&
+      (filters.language === '' || book.language === filters.language) &&
+      (filters.pages === '' || book.pages === parseInt(filters.pages)) &&
+      (filters.year === '' || book.year === parseInt(filters.year));
+
+    return matchesSearch && matchesFilters;
+  });
+
+  // Pagination
   const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
@@ -31,22 +61,13 @@ function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
-
-  // Reset to page 1 when search changes
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
-  };
+  const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   return (
     <div className="app-container">
       <Header />
 
-      {/* Search bar */}
+      {/* Search */}
       <div className="search-container">
         <input
           type="text"
@@ -56,6 +77,38 @@ function App() {
         />
       </div>
 
+      {/* Filters */}
+      <div className="filter-container">
+        <select name="country" value={filters.country} onChange={handleFilterChange}>
+          <option value="">All Countries</option>
+          {uniqueOptions('country').map((c, i) => (
+            <option key={i} value={c}>{c}</option>
+          ))}
+        </select>
+
+        <select name="language" value={filters.language} onChange={handleFilterChange}>
+          <option value="">All Languages</option>
+          {uniqueOptions('language').map((l, i) => (
+            <option key={i} value={l}>{l}</option>
+          ))}
+        </select>
+
+        <select name="pages" value={filters.pages} onChange={handleFilterChange}>
+          <option value="">All Page Counts</option>
+          {uniqueOptions('pages').map((p, i) => (
+            <option key={i} value={p}>{p}</option>
+          ))}
+        </select>
+
+        <select name="year" value={filters.year} onChange={handleFilterChange}>
+          <option value="">All Years</option>
+          {uniqueOptions('year').map((y, i) => (
+            <option key={i} value={y}>{y}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Book List */}
       <main className="book-list">
         {currentBooks.length === 0 ? (
           <p style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
@@ -78,6 +131,7 @@ function App() {
         )}
       </main>
 
+      {/* Pagination */}
       <footer className="app-footer">
         {totalPages > 1 && (
           <div className="pagination">
@@ -86,7 +140,6 @@ function App() {
                 key={num}
                 onClick={() => handlePageClick(num)}
                 className={num === currentPage ? 'active' : ''}
-                aria-current={num === currentPage ? 'page' : undefined}
               >
                 {num}
               </button>
