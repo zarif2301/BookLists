@@ -1,3 +1,17 @@
+/* Global styles */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(to bottom, #f9f9f9, #e3f2fd);
+  color: #333;
+}
+
+.app-container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
 /* Container setup */
 .app-container {
   max-width: 1200px;
@@ -35,45 +49,44 @@
   flex-grow: 1; /* so footer stays at bottom if content is small */
 }
 
-/* Individual book card */
+/* Book card styles */
+.book-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
 .book-card {
-  background: #fff;
-  padding: 20px;
-  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
-  border-radius: 10px;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .book-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
-/* Book image */
 .book-card img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 8px;
-  margin-bottom: 16px;
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 6px;
+  margin-bottom: 12px;
 }
 
-/* Book title */
 .book-card h3 {
-  font-size: 1.25rem;
-  margin-bottom: 10px;
-  text-align: center;
-  color: #222;
+  font-size: 1.1rem;
+  margin: 8px 0;
+  color: #0d47a1;
 }
 
-/* Book details */
 .book-card p {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   margin: 4px 0;
-  text-align: center;
-  color: #444;
 }
 
 /* Footer and pagination */
@@ -130,62 +143,67 @@
     min-width: 90px;
   }
 }
+/* Pagination */
 .pagination {
   display: flex;
   justify-content: center;
+  margin-top: 20px;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 15px;
+  gap: 1px;
 }
 
 .pagination button {
-  background-color: #007bff;
+  padding: 8px 14px;
   border: none;
-  color: white;
-  padding: 10px 14px;
-  font-size: 1rem;
+  background-color: #97c1f8;
   border-radius: 6px;
   cursor: pointer;
-  min-width: 40px;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
+  font-size: 14px;
+  min-width: 32px;
 }
 
-.pagination button:hover:not(.active) {
-  background-color: #0056b3;
+.pagination button.active {
+  background-color: #0d47a1;
+  color: white;
 }
 
-.pagination button.active,
-.pagination button[aria-current='page'] {
-  background-color: #004080;
-  font-weight: 700;
-  cursor: default;
+.pagination button:hover {
+  background-color: #ddd;
 }
 
-.pagination button:focus {
-  outline: 2px solid #004080;
-  outline-offset: 2px;
-}
-/* Search Bar */
+/* Search */
 .search-container {
-  text-align: center;
-  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
 .search-container input {
-  padding: 10px 15px;
-  width: 60%;
-  max-width: 400px;
-  font-size: 1rem;
-  border: 2px solid #ccc;
-  border-radius: 6px;
-  transition: border-color 0.3s ease;
+  padding: 10px 14px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px 0 0 8px;
+  width: 280px;
 }
 
-.search-container input:focus {
-  border-color: #0a79f0;
-  outline: none;
+.search-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border: none;
+  background-color: #2196f3;
+  color: white;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
+.search-button:hover {
+  background-color: #1976d2;
+}
+
+/* Filter Function */
 .filter-container {
   display: flex;
   flex-wrap: wrap;
@@ -197,4 +215,21 @@
 .filter-container select {
   padding: 8px;
   font-size: 14px;
+}
+
+/* Clear button */
+.clear-button {
+  background-color: #f44336; /* Red */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin-left: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.clear-button:hover {
+  background-color: #d32f2f;
 }

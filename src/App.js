@@ -6,12 +6,14 @@ function App() {
   const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filters, setFilters] = useState({
-    country: '',
-    language: '',
-    pages: '',
-    year: ''
-  });
+  const [searchInput, setSearchInput] = useState('');
+
+  // Filters
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [selectedLanguage, setSelectedLanguage] = useState('');
+  const [selectedPages, setSelectedPages] = useState('');
+  const [selectedYear, setSelectedYear] = useState('');
+
   const booksPerPage = 20;
 
   useEffect(() => {
@@ -20,37 +22,40 @@ function App() {
       .then((data) => setBooks(data));
   }, []);
 
-  // Get filter options from books
-  const uniqueOptions = (key) => [...new Set(books.map((book) => book[key]))].sort();
-
-  // Handle search
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
+  // Handle actual search button click
+  const handleSearch = () => {
+    setSearchTerm(searchInput);
     setCurrentPage(1);
   };
 
-  // Handle filter change
-  const handleFilterChange = (e) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
+  // Clear all filters
+  const handleClearFilters = () => {
+    setSearchTerm('');
+    setSearchInput('');
+    setSelectedCountry('');
+    setSelectedLanguage('');
+    setSelectedPages('');
+    setSelectedYear('');
     setCurrentPage(1);
   };
 
-  // Apply filters and search
+  // Apply filters
   const filteredBooks = books.filter((book) => {
     const matchesSearch =
       book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.author.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCountry = selectedCountry ? book.country === selectedCountry : true;
+    const matchesLanguage = selectedLanguage ? book.language === selectedLanguage : true;
+    const matchesPages =
+      selectedPages === 'lt200' ? book.pages < 200 :
+      selectedPages === '200to500' ? book.pages >= 200 && book.pages <= 500 :
+      selectedPages === 'gt500' ? book.pages > 500 : true;
+    const matchesYear = selectedYear ? book.year.toString() === selectedYear : true;
 
-    const matchesFilters =
-      (filters.country === '' || book.country === filters.country) &&
-      (filters.language === '' || book.language === filters.language) &&
-      (filters.pages === '' || book.pages === parseInt(filters.pages)) &&
-      (filters.year === '' || book.year === parseInt(filters.year));
-
-    return matchesSearch && matchesFilters;
+    return matchesSearch && matchesCountry && matchesLanguage && matchesPages && matchesYear;
   });
 
-  // Pagination
+  // Pagination logic
   const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
   const indexOfLastBook = currentPage * booksPerPage;
   const indexOfFirstBook = indexOfLastBook - booksPerPage;
@@ -67,48 +72,50 @@ function App() {
     <div className="app-container">
       <Header />
 
-      {/* Search */}
+      {/* Search & Filters */}
       <div className="search-container">
         <input
           type="text"
           placeholder="Search by title or author..."
-          value={searchTerm}
-          onChange={handleSearch}
+          value={searchInput}
+          onChange={(e) => setSearchInput(e.target.value)}
         />
+        <button className="search-button" onClick={handleSearch}>Search</button>
       </div>
 
-      {/* Filters */}
       <div className="filter-container">
-        <select name="country" value={filters.country} onChange={handleFilterChange}>
+        <select value={selectedCountry} onChange={(e) => setSelectedCountry(e.target.value)}>
           <option value="">All Countries</option>
-          {uniqueOptions('country').map((c, i) => (
-            <option key={i} value={c}>{c}</option>
+          {[...new Set(books.map(book => book.country))].sort().map((country, idx) => (
+            <option key={idx} value={country}>{country}</option>
           ))}
         </select>
 
-        <select name="language" value={filters.language} onChange={handleFilterChange}>
+        <select value={selectedLanguage} onChange={(e) => setSelectedLanguage(e.target.value)}>
           <option value="">All Languages</option>
-          {uniqueOptions('language').map((l, i) => (
-            <option key={i} value={l}>{l}</option>
+          {[...new Set(books.map(book => book.language))].sort().map((lang, idx) => (
+            <option key={idx} value={lang}>{lang}</option>
           ))}
         </select>
 
-        <select name="pages" value={filters.pages} onChange={handleFilterChange}>
+        <select value={selectedPages} onChange={(e) => setSelectedPages(e.target.value)}>
           <option value="">All Page Counts</option>
-          {uniqueOptions('pages').map((p, i) => (
-            <option key={i} value={p}>{p}</option>
+          <option value="lt200">Less than 200</option>
+          <option value="200to500">200–500</option>
+          <option value="gt500">More than 500</option>
+        </select>
+
+        <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)}>
+          <option value="">All Years</option>
+          {[...new Set(books.map(book => book.year))].sort((a, b) => a - b).map((year, idx) => (
+            <option key={idx} value={year}>{year}</option>
           ))}
         </select>
 
-        <select name="year" value={filters.year} onChange={handleFilterChange}>
-          <option value="">All Years</option>
-          {uniqueOptions('year').map((y, i) => (
-            <option key={i} value={y}>{y}</option>
-          ))}
-        </select>
+        <button className="clear-button" onClick={handleClearFilters}>Clear Filters</button>
       </div>
 
-      {/* Book List */}
+      {/* Book list */}
       <main className="book-list">
         {currentBooks.length === 0 ? (
           <p style={{ gridColumn: '1 / -1', textAlign: 'center' }}>
@@ -124,6 +131,7 @@ function App() {
               <h3>{book.title}</h3>
               <p><strong>Author:</strong> {book.author}</p>
               <p><strong>Country:</strong> {book.country}</p>
+              <p><strong>Language:</strong> {book.language}</p>
               <p><strong>Year:</strong> {book.year}</p>
               <p><strong>Pages:</strong> {book.pages}</p>
             </div>
@@ -140,6 +148,7 @@ function App() {
                 key={num}
                 onClick={() => handlePageClick(num)}
                 className={num === currentPage ? 'active' : ''}
+                aria-current={num === currentPage ? 'page' : undefined}
               >
                 {num}
               </button>
