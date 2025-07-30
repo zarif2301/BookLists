@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import Header from './components/Header';
 import './App.css';
 
 const filterByRange = (value, [min, max]) => value >= min && value <= max;
@@ -170,20 +169,26 @@ function App() {
             <option value="18th">18th Century</option>
             <option value="19th">19th Century</option>
           </select>
-
-          {/* Books per page */}
-          <select
-            value={booksPerPage}
-            onChange={e => {
-              setBooksPerPage(Number(e.target.value));
-              setCurrentPage(1);
-            }}
-          >
-            <option value={20}>20 per page</option>
-            <option value={50}>50 per page</option>
-            <option value={100}>100 per page</option>
-          </select>
         </div>
+        {/* Books per page selector separate */}
+<div className="books-per-page-container">
+  <label htmlFor="booksPerPageSelect" className="books-per-page-label">
+    Show books per page:
+  </label>
+  <select
+    id="booksPerPageSelect"
+    value={booksPerPage}
+    onChange={e => {
+      setBooksPerPage(Number(e.target.value));
+      setCurrentPage(1);
+    }}
+    className="books-per-page-select"
+  >
+    <option value={20}>20</option>
+    <option value={50}>50</option>
+    <option value={100}>100</option>
+  </select>
+</div>
       </section>
 
       {/* Books Grid */}

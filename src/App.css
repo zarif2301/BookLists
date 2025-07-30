@@ -255,3 +255,26 @@ body {
   }
 }
 
+
+.books-per-page-label {
+  font-weight: 600;
+  color: #555;
+  font-size: 1rem;
+}
+
+.books-per-page-select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #ccc;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+  background-color: white;
+}
+
+.books-per-page-select:hover,
+.books-per-page-select:focus {
+  border-color: #1976d2;
+  outline: none;
+  box-shadow: 0 0 6px #1976d2aa;
+}
