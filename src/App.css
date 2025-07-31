@@ -127,7 +127,7 @@ body {
 /* Book list grid */
 .book-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 24px;
 }
 
@@ -234,7 +234,7 @@ body {
   height: 45px;
   font-size: 24px;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
   transition: background-color 0.3s ease;
   z-index: 1000;
 }
@@ -243,19 +243,7 @@ body {
   background-color: #115293;
 }
 
-/* Responsive tweaks */
-@media (max-width: 800px) {
-  .controls-container {
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .search-bar, .filters-container {
-    min-width: 100%;
-  }
-}
-
-
+/* Books-per-page */
 .books-per-page-label {
   font-weight: 600;
   color: #555;
@@ -279,3 +267,59 @@ body {
   box-shadow: 0 0 6px #1976d2aa;
 }
 
+/* Responsive tweaks */
+@media (max-width: 800px) {
+  .controls-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .search-bar,
+  .filters-container {
+    width: 100%;
+  }
+
+  .clear-btn {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .hero-header h1 {
+    font-size: 2.2rem;
+  }
+
+  .hero-header p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .book-image {
+    height: 220px;
+  }
+
+  .book-info h3 {
+    font-size: 1rem;
+  }
+
+  .book-info p {
+    font-size: 0.85rem;
+  }
+
+  .pagination {
+    gap: 6px;
+  }
+
+  .page-btn {
+    padding: 6px 10px;
+    font-size: 0.9rem;
+  }
+
+  .back-to-top {
+    bottom: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+}
