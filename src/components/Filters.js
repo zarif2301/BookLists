@@ -1,18 +1,19 @@
 import React from 'react';
 
+// Filters component handles all filter dropdowns for the book list
 export default function Filters({
-  countryFilter,
-  languageFilter,
-  pagesFilter,
-  yearFilter,
-  uniqueCountries,
-  uniqueLanguages,
-  booksPerPage,
-  onCountryChange,
-  onLanguageChange,
-  onPagesChange,
-  onYearChange,
-  onBooksPerPageChange
+  countryFilter, // Currently selected country filter
+  languageFilter, // Currently selected language filter
+  pagesFilter, // Currently selected pages filter
+  yearFilter, // Currently selected year filter
+  uniqueCountries, // List of unique countries for the dropdown
+  uniqueLanguages, // List of unique languages for the dropdown
+  booksPerPage, // Number of books to display per page
+  onCountryChange, // Callback for when the country filter changes
+  onLanguageChange, // Callback for when the language filter changes
+  onPagesChange, // Callback for when the pages filter changes
+  onYearChange, // Callback for when the year filter changes
+  onBooksPerPageChange // Callback for when the books per page filter changes
 }) {
   return (
     <>

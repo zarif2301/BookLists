@@ -1,5 +1,6 @@
 import React from 'react';
 
+//Renders a set of pagination buttons allowing users to navigate between pages.
 export default function Pagination({ totalPages, currentPage, onPageClick }) {
   return (
     <nav className="pagination">

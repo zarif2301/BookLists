@@ -1,5 +1,5 @@
 import React from 'react';
-
+//Renders a search input with "Search" and "Clear Filters" buttons.
 export default function SearchBar({ searchTerm, onChange, onSearch, onClear }) {
   return (
     <div className="search-bar">
