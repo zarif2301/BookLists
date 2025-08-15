@@ -3,7 +3,7 @@
 A React-based web application that allows users to **search**, **filter**, and **paginate** through a dataset of the 100 best books.  
 Users can filter books by **country**, **language**, **page range**, and **century of publication**, and can also adjust the number of books displayed per page.
 
-## 🚀 Features
+## Features
 
 - **Search by Title or Author**  
   Quickly find books by entering keywords in the search bar.
@@ -21,7 +21,7 @@ Users can filter books by **country**, **language**, **page range**, and **centu
 - **Adjustable Results Per Page**  
   Choose how many books to show on a page (20, 50, or 100).
 
-## 📖 How It Works
+## How It Works
 
 1. **Data Loading**
 
