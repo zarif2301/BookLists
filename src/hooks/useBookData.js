@@ -1,7 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 
+//Loads Books from /books.json and manages: Search, Filters and Pagination
+
 const filterByRange = (value, [min, max]) => value >= min && value <= max;
 
+// Maps century labels to year ranges
 const getCenturyRange = (label) => {
   switch (label) {
     case '16th': return [1501, 1600];
@@ -12,6 +15,7 @@ const getCenturyRange = (label) => {
   }
 };
 
+// Maps page range labels to numeric page ranges
 const getPageRange = (label) => {
   switch (label) {
     case '1-100': return [1, 100];
@@ -22,12 +26,13 @@ const getPageRange = (label) => {
 };
 
 export default function useBookData() {
+
+  // State: All books loaded from JSON
   const [books, setBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [booksPerPage, setBooksPerPage] = useState(20);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchClicked, setSearchClicked] = useState(false);
-
   const [countryFilter, setCountryFilter] = useState('');
   const [languageFilter, setLanguageFilter] = useState('');
   const [pagesFilter, setPagesFilter] = useState('');
